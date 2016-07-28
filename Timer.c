@@ -9,6 +9,7 @@ void init_timer1()
     _T1IF = 0;//clear flag interrupt
     _T1IP = 4;//set prioritet 4
     _T1IE = 1;//enable interrupt
+    PORT_T1 = 0;
     TRIS_T1 = 0xFFFF;//port timer1 as input
     PR1 = MEASURTI;//period reset TMR1
     TMR1 = 0;//clear counter
@@ -24,6 +25,7 @@ void init_timer1()
 
 void init_timer23()
 {
+    PORT_T2 = 0;
     TRIS_T2 = 0xFFFF;//port timer2 as input
     mapping_pin_timer2RP0();//remap pin timer2 to RP0
     _T2IE = 0;//disable interrupt timer2
@@ -34,7 +36,8 @@ void init_timer23()
     TMR2 = 0;//clear counter T2
     TMR3 = 0;//clear counter T3
     T2CONbits.TCS = 1;//
-    T2CONbits.TCKPS = 0;
+    T2CONbits.TCKPS1 = 1;
+    T2CONbits.TCKPS0 = 1;
     T2CONbits.TGATE = 0;
     T2CONbits.TSIDL = 0;
     T2CONbits.T32 = 1;
@@ -54,7 +57,7 @@ void start_timer1_23()
 void mapping_pin_timer2RP0()
 {
     __builtin_write_OSCCONL(OSCCON & 0xbf);//Unlock Registers use C30 built-in macro
-    RPINR3 = 0;
+    RPINR3 = 0x1E;//Assign T2 To Pin RP30
 /*    RPINR3bits.T2CKR0 = 1;//Assign T2 To Pin RP0
     RPINR3bits.T2CKR1 = 0;
     RPINR3bits.T2CKR2 = 0;
