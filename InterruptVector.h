@@ -11,8 +11,8 @@
 #include "Timer.h"
 
 
-unsigned long int current_value = 0, medium_value = 0;
-int FLAG1 = 0, FLAG2 = 0, flag_interrupt = 0;
+
+int flag_interrupt = 0;
 unsigned long int value_freqL = 0, value_freqH = 0;
 
 

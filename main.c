@@ -4,6 +4,7 @@
  * Пограмма для подсчета частоты входных сигналов за 
  * эталонный промежуток времени
  * Created on 15 ???? 2016 ?., 9:43
+ * руссике коменты на 1251
  */
 
 #include <stdio.h>
@@ -13,6 +14,7 @@
 #include "InterruptVector.h"
 #include "Timer.h"
 #include "LED.h"
+#include "calculation.h"
 //#include "InputCapture.h"
 
 #define NUMMEAS 6//number measurments
@@ -64,8 +66,8 @@ enum current_account{ //крутим карусель
     mode6
 }mode;
 
-
-//int mode = 0, mode1 = 0, mode6 = 5;
+float current_value = 0, medium_value = 0;
+unsigned int DAC_current = IDEAL_VALUE;
 
 
 int main(void)
@@ -74,7 +76,6 @@ int main(void)
 //    #define SYSCLK 32000000
 //    int CONFIG1 __attribute__((space(prog), address(0x2ABFE))) = 0x7FFF ;
     AD1PCFGL = 0xffff;//порт в режим ввода/вывода цифровых сигналов
-    //руссике коменты на 1251
 	init_timer1();
     init_timer23();//
     start_timer1_23();
@@ -103,6 +104,7 @@ int main(void)
             {      
                 current_value = (value_freqH<<16)|(value_freqL);
                 medium_value += current_value;//сохраняем сумму значений 
+                calcul_freq(current_value, DAC_current);
 //              SPI = current_value - ideal_value;
                 
                 output_value(current_value);

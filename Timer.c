@@ -36,8 +36,8 @@ void init_timer23()
     TMR2 = 0;//clear counter T2
     TMR3 = 0;//clear counter T3
     T2CONbits.TCS = 1;//
-    T2CONbits.TCKPS1 = 1;
-    T2CONbits.TCKPS0 = 1;
+    T2CONbits.TCKPS1 = 1;//prescaler 
+    T2CONbits.TCKPS0 = 1;//1:256
     T2CONbits.TGATE = 0;
     T2CONbits.TSIDL = 0;
     T2CONbits.T32 = 1;
