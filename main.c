@@ -21,8 +21,8 @@
 #define NUMMEAS 6//number measurments
 #define VALUE_CAUNTER_L TMR2
 #define VALUE_CAUNTER_H TMR3
-
-
+#define IDEAL_VALUE 512
+#define TIME_MEAS 10
 
 
 
@@ -103,10 +103,10 @@ int main(void)
                {    
                     current_value = (value_freqH<<16)|(value_freqL);
                     medium_value += current_value;//сохраняем сумму значений частоты за N измерений       
-                    medium_value = medium_value/NUMMEAS;
-//                    spi_txrx_AD5312(calcul_freq(medium_value, DAC_current));
-                    invers_led2();
+                    medium_value = medium_value/(NUMMEAS*TIME_MEAS);
                     output_value(current_value);
+                    spi_txrx_AD5312(calcul_freq(medium_value, DAC_current));
+                    invers_led2();
                     current_value = 0;//сбрасываем текущее значение
                     medium_value = 0;//сбрасываем среднее значение которое уже отправили на ЦАП 
                     mode = mode1;//переключаем карусель в начало
@@ -117,8 +117,9 @@ int main(void)
                     current_value = (value_freqH<<16)|(value_freqL);
                     medium_value += current_value;//сохраняем сумму значений                    
 //обрабатываем значение принятой частоты и отправляем необходимое значение напряжения на ЦАП
-//                    spi_txrx_AD5312(calcul_freq(current_value, DAC_current));                   
                     output_value(current_value);
+                    current_value = current_value/TIME_MEAS;
+                    spi_txrx_AD5312(calcul_freq(10000001.5, DAC_current));                   
                     invers_led1();
                     current_value = 0;//сбрасываем текущее значение
                     mode++;//переходим к следующему замеру частоты                   

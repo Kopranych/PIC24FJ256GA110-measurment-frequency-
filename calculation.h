@@ -13,7 +13,7 @@
 #define N 10
 #define STEP_F (Fmax - Fmin)/pow(2, N)
 #define PERFECT_FREQ 10000000
-#define IDEAL_VALUE 512
+#define VALUE_LIMIT 1024
 
 //вычисление значения, отклонения частоты
 unsigned int calcul_freq(float freq_meas, unsigned int DAC_value);

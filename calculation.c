@@ -6,24 +6,28 @@
 unsigned int calcul_freq(float freq_meas, unsigned int DAC_value)
 {
     float difference;
+    float step = STEP_F;
     unsigned int shift;
- //   unsigned long int f_perf = F_PERF;
-    freq_meas *= 256;//пока предделитель измеряемого сигнала настроен на 256
-    if(freq_meas < PERFECT_FREQ)
+    unsigned long int ideal = PERFECT_FREQ;
+//   unsigned long int f_perf = F_PERF;
+//    freq_meas *= 256;//пока предделитель измеряемого сигнала настроен на 256
+    if(freq_meas < ideal)
     {
-        difference = PERFECT_FREQ - freq_meas;//вычисляем разность идеальной и измеренной частоты
-        shift = rounding(difference/STEP_F);//вычисляем значение смещения и округляем до целого 
+        difference = ideal - freq_meas;//вычисляем разность идеальной и измеренной частоты
+        shift = rounding(difference/step);//вычисляем значение смещения и округляем до целого 
         DAC_value += shift;//увеличиваем текушее значение ЦАП на значение смещения
         
     }  
-    else if(freq_meas > PERFECT_FREQ)
+    else if(freq_meas > ideal)
     {
-        difference = freq_meas - PERFECT_FREQ;
-        shift = rounding(difference/STEP_F);
+        difference = freq_meas - ideal;
+        shift = rounding(difference/step);
         DAC_value -= shift;
     }
-    else if(freq_meas == PERFECT_FREQ) DAC_value = DAC_value;
-    return DAC_value;
+    else if(freq_meas == ideal) DAC_value = DAC_value;
+//если DAC_value   
+    if(DAC_value == VALUE_LIMIT) return (DAC_value - 1);
+    else return DAC_value;   
 }
 
 unsigned int rounding(float n)// округление до целого значения
