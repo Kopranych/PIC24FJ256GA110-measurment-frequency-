@@ -14,6 +14,7 @@ unsigned int calcul_freq(float freq_meas, unsigned int DAC_value)
         difference = PERFECT_FREQ - freq_meas;//вычисляем разность идеальной и измеренной частоты
         shift = rounding(difference/STEP_F);//вычисляем значение смещения и округляем до целого 
         DAC_value += shift;//увеличиваем текушее значение ЦАП на значение смещения
+        
     }  
     else if(freq_meas > PERFECT_FREQ)
     {

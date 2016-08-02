@@ -69,7 +69,7 @@ enum current_account{ //крутим карусель
 
 float current_value = 0, medium_value = 0;
 unsigned int DAC_current = IDEAL_VALUE;
-
+static int is_init = 0;
 
 int main(void)
 {   
@@ -83,43 +83,50 @@ int main(void)
     init_port_led();
     init_port_led_value();
     spi_init();
+    
+    spi_txrx_AD5312(DAC_current);//задаем предположительной напряжение на ЦАП для частоты в 10МГц
 	while(1)
 	{	
         while(flag_interrupt)//как только сработало прерывание включается флаг прерывания
         {
             _T1IE = 0;//disable interrupt
-            if(mode == mode6)
-            {    
-                current_value = (value_freqH<<16)|(value_freqL);
-                medium_value += current_value;//сохраняем сумму значений частоты за N измерений       
-//              medium_value = medium_value/NUMMEAS;
-//              SPI = medium_value;
-                mode = mode1;//переключаем карусель в начало
-                invers_led2();
-                output_value(current_value);
-                spi_txrx_AD5312(0);
-//                FLAG1 = 1;
-                flag_interrupt = 0;//сбрасываем флаг 
-                medium_value = 0;//сбрасываем среднее значение которое уже отправили на ЦАП 
-                current_value = 0;
+            if(is_init)// первое прерывание мы не выводим измеренную частоту т.к она на точная
+            {
+                value_freqL = 0;//сохранили значение счетчиков
+                value_freqH = 0;
+                is_init = 0;
+                flag_interrupt = 0;//сбрасываем флаг  
             }
             else
-            {      
-                current_value = (value_freqH<<16)|(value_freqL);
-                medium_value += current_value;//сохраняем сумму значений 
-                calcul_freq(current_value, DAC_current);
-//              SPI = current_value - ideal_value;
-                
-                output_value(current_value);
-//                timer3 = 0;
-                invers_led1();
-                current_value = 0;
-                mode++;//переходим к следующему замеру частоты
-//                FLAG2 = 1;
-                spi_txrx_AD5312(465);
-                flag_interrupt = 0;//сбрасываем флаг                 
+            { 
+               if(mode == mode6)
+               {    
+                    current_value = (value_freqH<<16)|(value_freqL);
+                    medium_value += current_value;//сохраняем сумму значений частоты за N измерений       
+                    medium_value = medium_value/NUMMEAS;
+//                    spi_txrx_AD5312(calcul_freq(medium_value, DAC_current));
+                    invers_led2();
+                    output_value(current_value);
+                    current_value = 0;//сбрасываем текущее значение
+                    medium_value = 0;//сбрасываем среднее значение которое уже отправили на ЦАП 
+                    mode = mode1;//переключаем карусель в начало
+                    flag_interrupt = 0;//сбрасываем флаг                   
+               }
+               else
+               {      
+                    current_value = (value_freqH<<16)|(value_freqL);
+                    medium_value += current_value;//сохраняем сумму значений                    
+//обрабатываем значение принятой частоты и отправляем необходимое значение напряжения на ЦАП
+//                    spi_txrx_AD5312(calcul_freq(current_value, DAC_current));                   
+                    output_value(current_value);
+                    invers_led1();
+                    current_value = 0;//сбрасываем текущее значение
+                    mode++;//переходим к следующему замеру частоты                   
+                    flag_interrupt = 0;//сбрасываем флаг                 
+                }
+                _T1IE = 1;//enable interrupt
             }
-            _T1IE = 1;//enable interrupt
+           
         }
         if(current_value > 0)
         {

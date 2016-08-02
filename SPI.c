@@ -5,7 +5,7 @@ void spi_init()
 {
     _SPI1IF = 0;
     TRIS_SPI = 0;
-    mapping_pin_spi();
+//    mapping_pin_spi();
     SPI1STATbits.SPIEN = 0;
     SPI1CON1 = 0;
     SPI1CON1bits.DISSCK = 0;
@@ -17,19 +17,21 @@ void spi_init()
     SPI1CON2bits.SPIFPOL = 0;
     SPI1STATbits.SPIEN = 1;
 }
+
 unsigned int spi_txrx(unsigned int data)
 {
+    PORTGbits.RG0 = 0;
     unsigned int temp;
     SPI1BUF = data;
     while(_SPI1IF == 0);
     _SPI1IF = 0;
     temp = SPI1BUF;
+    PORTGbits.RG0 = 1;
     return temp;
 }
 
 void spi_txrx_AD5312(unsigned int data)
 {
- 
     spi_txrx(data<<2);
 }
 

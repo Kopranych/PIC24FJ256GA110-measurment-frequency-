@@ -58,13 +58,16 @@ void mapping_pin_timer2RP0()
 {
     __builtin_write_OSCCONL(OSCCON & 0xbf);//Unlock Registers use C30 built-in macro
     RPINR3 = 0x1E;//Assign T2 To Pin RP30
+    RPOR10bits.RP21R = 7;//assign output MOSI
+    RPOR13bits.RP26R = 8;//assign output SCK
+    RPOR9bits.RP19R = 9;//assign output SS
 /*    RPINR3bits.T2CKR0 = 1;//Assign T2 To Pin RP0
     RPINR3bits.T2CKR1 = 0;
     RPINR3bits.T2CKR2 = 0;
     RPINR3bits.T2CKR3 = 0;
     RPINR3bits.T2CKR4 = 0;
     RPINR3bits.T2CKR5 = 0;
-*/    __builtin_write_OSCCONL(OSCCON | 0x40);//Lock Registers use C30 built-in macro
+*/  __builtin_write_OSCCONL(OSCCON | 0x40);//Lock Registers use C30 built-in macro
 }
 
 
