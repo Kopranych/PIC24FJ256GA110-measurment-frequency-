@@ -66,3 +66,10 @@ void mapping_pin_timer2RP0()
     RPINR3bits.T2CKR5 = 0;
 */    __builtin_write_OSCCONL(OSCCON | 0x40);//Lock Registers use C30 built-in macro
 }
+
+
+/*задержка в 1 секунду с поиощью таймера
+#define SYSCLK 8000000
+#define t1 1
+#define PREG SYSCLK/2*t1/256
+*/

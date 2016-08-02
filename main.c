@@ -15,6 +15,7 @@
 #include "Timer.h"
 #include "LED.h"
 #include "calculation.h"
+#include "SPI.h"
 //#include "InputCapture.h"
 
 #define NUMMEAS 6//number measurments
@@ -81,6 +82,7 @@ int main(void)
     start_timer1_23();
     init_port_led();
     init_port_led_value();
+    spi_init();
 	while(1)
 	{	
         while(flag_interrupt)//как только сработало прерывание включается флаг прерывания
@@ -95,6 +97,7 @@ int main(void)
                 mode = mode1;//переключаем карусель в начало
                 invers_led2();
                 output_value(current_value);
+                spi_txrx_AD5312(0);
 //                FLAG1 = 1;
                 flag_interrupt = 0;//сбрасываем флаг 
                 medium_value = 0;//сбрасываем среднее значение которое уже отправили на ЦАП 
@@ -113,6 +116,7 @@ int main(void)
                 current_value = 0;
                 mode++;//переходим к следующему замеру частоты
 //                FLAG2 = 1;
+                spi_txrx_AD5312(465);
                 flag_interrupt = 0;//сбрасываем флаг                 
             }
             _T1IE = 1;//enable interrupt
